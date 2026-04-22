@@ -1,0 +1,4 @@
+interface:
+  display_name: "JumpServer Log Debug"
+  short_description: "通过 JumpServer 排查部署后的服务日志"
+  default_prompt: "Use $jumpserver-log-debug to inspect deployed service logs through JumpServer and compare the findings with the local code changes."

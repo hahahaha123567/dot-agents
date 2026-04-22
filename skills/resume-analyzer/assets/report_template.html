@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>简历分析报告 - Resume Analysis Report</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #dbeafe;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --success-bg: #f0fdf4;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --danger-bg: #fef2f2;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --info: #0891b2;
+      --info-light: #cffafe;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --transition: all 0.2s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #fafbff 50%, #f5f0ff 100%);
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 4px;
+    }
+    .header .subtitle {
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+
+    /* Score Ring */
+    .score-section {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      background: white;
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .score-ring-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+    }
+    .score-ring-container svg {
+      transform: rotate(-90deg);
+    }
+    .score-ring-container .score-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .score-ring-container .score-number {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .score-ring-container .score-label {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-top: 2px;
+    }
+    .score-details {
+      flex: 1;
+      min-width: 200px;
+    }
+    .score-details h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--gray-800);
+    }
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--gray-50);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+    }
+    .stat-card .stat-num {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .stat-card .stat-label {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .stat-high { color: var(--danger); }
+    .stat-med { color: var(--warning); }
+    .stat-low { color: var(--success); }
+
+    /* Dimension Bars */
+    .dimensions-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+    .dimensions-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--gray-800);
+    }
+    .dim-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+    .dim-label {
+      width: 110px;
+      font-size: 13px;
+      color: var(--gray-700);
+      flex-shrink: 0;
+    }
+    .dim-bar-bg {
+      flex: 1;
+      height: 22px;
+      background: var(--gray-100);
+      border-radius: 11px;
+      overflow: hidden;
+      position: relative;
+    }
+    .dim-bar-fill {
+      height: 100%;
+      border-radius: 11px;
+      transition: width 1s ease;
+      min-width: 2px;
+    }
+    .dim-score {
+      width: 36px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      flex-shrink: 0;
+    }
+
+    /* Strengths & Improvements */
+    .feedback-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 640px) {
+      .feedback-section { grid-template-columns: 1fr; }
+    }
+    .feedback-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+    }
+    .feedback-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .feedback-card.strengths h3 { color: var(--success); }
+    .feedback-card.improvements h3 { color: var(--warning); }
+    .feedback-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .feedback-card li {
+      padding: 6px 0;
+      font-size: 14px;
+      color: var(--gray-700);
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .feedback-card li:last-child { border-bottom: none; }
+    .feedback-card li::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .feedback-card.strengths li::before { background: var(--success); }
+    .feedback-card.improvements li::before { background: var(--warning); }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .filter-bar .label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-right: 4px;
+    }
+    .filter-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--gray-200);
+      background: white;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--gray-600);
+      font-family: inherit;
+    }
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .filter-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--gray-200);
+      margin: 0 4px;
+    }
+    .severity-btn.high.active { background: var(--danger); border-color: var(--danger); }
+    .severity-btn.medium.active { background: var(--warning); border-color: var(--warning); }
+    .severity-btn.low.active { background: var(--success); border-color: var(--success); }
+
+    /* Progress Bar */
+    .progress-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .progress-text {
+      font-size: 13px;
+      color: var(--gray-600);
+      white-space: nowrap;
+    }
+    .progress-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: var(--gray-100);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #7c3aed);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+    .progress-pct {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* Suggestion Cards */
+    .suggestions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .suggestion-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: var(--transition);
+      border-left: 4px solid transparent;
+    }
+    .suggestion-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    .suggestion-card.severity-high { border-left-color: var(--danger); }
+    .suggestion-card.severity-medium { border-left-color: var(--warning); }
+    .suggestion-card.severity-low { border-left-color: var(--success); }
+    .suggestion-card.accepted { opacity: 0.6; }
+    .suggestion-card.accepted .card-header { background: var(--success-bg); }
+    .suggestion-card.skipped { opacity: 0.45; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: var(--gray-50);
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-category {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+    .badge-section {
+      background: var(--gray-200);
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+    .severity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .severity-dot.high { background: var(--danger); }
+    .severity-dot.medium { background: var(--warning); }
+    .severity-dot.low { background: var(--success); }
+    .severity-text {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .card-id {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    .card-body { padding: 16px 20px; }
+
+    .diff-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 640px) {
+      .diff-container { grid-template-columns: 1fr; }
+    }
+    .diff-box {
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      position: relative;
+    }
+    .diff-box .diff-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .diff-original {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-light);
+    }
+    .diff-original .diff-label { color: var(--danger); }
+    .diff-original .diff-text {
+      color: var(--gray-800);
+      text-decoration: line-through;
+      text-decoration-color: rgba(220, 38, 38, 0.3);
+    }
+    .diff-suggested {
+      background: var(--success-bg);
+      border: 1px solid var(--success-light);
+    }
+    .diff-suggested .diff-label { color: var(--success); }
+    .diff-suggested .diff-text { color: var(--gray-800); }
+
+    .reason-text {
+      font-size: 13px;
+      color: var(--gray-600);
+      padding: 10px 14px;
+      background: var(--gray-50);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--info);
+      margin-bottom: 14px;
+    }
+    .reason-text strong {
+      color: var(--gray-700);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .action-btn {
+      padding: 7px 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--gray-200);
+      background: white;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .action-btn:hover { box-shadow: var(--shadow); }
+    .btn-accept {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+    .btn-accept:hover { background: #15803d; }
+    .btn-skip {
+      color: var(--gray-500);
+    }
+    .btn-skip:hover { background: var(--gray-100); }
+    .btn-undo {
+      color: var(--primary);
+      border-color: var(--primary-light);
+    }
+    .btn-undo:hover { background: var(--primary-light); }
+
+    /* Export Section */
+    .export-section {
+      text-align: center;
+      padding: 24px;
+    }
+    .export-btn {
+      padding: 12px 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .export-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    .export-hint {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 8px;
+    }
+
+    /* No results */
+    .no-results {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gray-400);
+      font-size: 15px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .suggestion-card {
+      animation: fadeIn 0.3s ease both;
+    }
+    .suggestion-card:nth-child(2) { animation-delay: 0.05s; }
+    .suggestion-card:nth-child(3) { animation-delay: 0.1s; }
+    .suggestion-card:nth-child(4) { animation-delay: 0.15s; }
+    .suggestion-card:nth-child(5) { animation-delay: 0.2s; }
+
+    /* Hidden state for filtering */
+    .hidden { display: none !important; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app"></div>
+
+  <script>
+    // ===== DATA PLACEHOLDER - REPLACE WITH ACTUAL DATA =====
+    const resumeData = __RESUME_DATA_PLACEHOLDER__;
+
+    // ===== RENDERING ENGINE =====
+    const state = {
+      activeCategory: 'all',
+      activeSeverity: 'all',
+      decisions: {} // id -> 'accepted' | 'skipped'
+    };
+
+    function getScoreColor(score) {
+      if (score >= 85) return 'var(--success)';
+      if (score >= 65) return 'var(--primary)';
+      if (score >= 45) return 'var(--warning)';
+      return 'var(--danger)';
+    }
+
+    function getBarColor(score) {
+      if (score >= 80) return 'linear-gradient(90deg, #22c55e, #16a34a)';
+      if (score >= 60) return 'linear-gradient(90deg, #3b82f6, #2563eb)';
+      if (score >= 40) return 'linear-gradient(90deg, #f59e0b, #d97706)';
+      return 'linear-gradient(90deg, #ef4444, #dc2626)';
+    }
+
+    const categoryEmojis = {
+      '量化成果': '📊', '行动动词': '🎯', '关键词优化': '🔑',
+      '结构与格式': '📐', '精简冗余': '✂️', '表达润色': '🎨',
+      '内容补充': '💡'
+    };
+
+    const severityLabels = { high: '高优', medium: '中等', low: '低优' };
+
+    function render() {
+      const d = resumeData;
+      const categories = [...new Set(d.suggestions.map(s => s.category))];
+      const filtered = d.suggestions.filter(s => {
+        if (state.activeCategory !== 'all' && s.category !== state.activeCategory) return false;
+        if (state.activeSeverity !== 'all' && s.severity !== state.activeSeverity) return false;
+        return true;
+      });
+
+      const highCount = d.suggestions.filter(s => s.severity === 'high').length;
+      const medCount = d.suggestions.filter(s => s.severity === 'medium').length;
+      const lowCount = d.suggestions.filter(s => s.severity === 'low').length;
+      const reviewed = Object.keys(state.decisions).length;
+      const pct = d.suggestions.length > 0 ? Math.round(reviewed / d.suggestions.length * 100) : 0;
+
+      const scoreColor = getScoreColor(d.overallScore);
+      const circumference = 2 * Math.PI * 58;
+      const offset = circumference - (d.overallScore / 100) * circumference;
+
+      let html = `
+        <div class="header">
+          <h1>📄 简历分析报告</h1>
+          <div class="subtitle">${d.fileName} · ${d.analyzedAt}</div>
+        </div>
+
+        <div class="score-section">
+          <div class="score-ring-container">
+            <svg width="140" height="140">
+              <circle cx="70" cy="70" r="58" fill="none" stroke="var(--gray-100)" stroke-width="10"/>
+              <circle cx="70" cy="70" r="58" fill="none" stroke="${scoreColor}" stroke-width="10"
+                stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
+                stroke-linecap="round"/>
+            </svg>
+            <div class="score-text">
+              <div class="score-number" style="color:${scoreColor}">${d.overallScore}</div>
+              <div class="score-label">综合评分</div>
+            </div>
+          </div>
+          <div class="score-details">
+            <h2>${d.overallScore >= 85 ? '🌟 优秀简历' : d.overallScore >= 65 ? '👍 基础良好，仍可优化' : '⚡ 有较大提升空间'}</h2>
+            <div class="stats-row">
+              <div class="stat-card">
+                <div class="stat-num">${d.totalSuggestions}</div>
+                <div class="stat-label">修改建议</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num stat-high">${highCount}</div>
+                <div class="stat-label">🔴 高优先</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num stat-med">${medCount}</div>
+                <div class="stat-label">🟡 中等</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num stat-low">${lowCount}</div>
+                <div class="stat-label">🟢 低优先</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dimensions-section">
+          <h3>📈 各维度评分</h3>
+          ${Object.entries(d.dimensionScores).map(([name, score]) => `
+            <div class="dim-row">
+              <div class="dim-label">${categoryEmojis[name] || ''} ${name}</div>
+              <div class="dim-bar-bg">
+                <div class="dim-bar-fill" style="width:${score}%; background:${getBarColor(score)}"></div>
+              </div>
+              <div class="dim-score">${score}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        ${d.generalFeedback ? `
+        <div class="feedback-section">
+          <div class="feedback-card strengths">
+            <h3>✅ 亮点</h3>
+            <ul>${(d.generalFeedback.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul>
+          </div>
+          <div class="feedback-card improvements">
+            <h3>⚠️ 待改进</h3>
+            <ul>${(d.generalFeedback.improvements || []).map(s => `<li>${s}</li>`).join('')}</ul>
+          </div>
+        </div>
+        ` : ''}
+
+        <div class="filter-bar">
+          <span class="label">分类:</span>
+          <button class="filter-btn ${state.activeCategory === 'all' ? 'active' : ''}" onclick="setCategory('all')">全部</button>
+          ${categories.map(c => `
+            <button class="filter-btn ${state.activeCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${categoryEmojis[c] || ''} ${c}</button>
+          `).join('')}
+          <div class="filter-divider"></div>
+          <span class="label">优先级:</span>
+          <button class="filter-btn severity-btn high ${state.activeSeverity === 'high' ? 'active' : ''}" onclick="setSeverity('high')">🔴 高</button>
+          <button class="filter-btn severity-btn medium ${state.activeSeverity === 'medium' ? 'active' : ''}" onclick="setSeverity('medium')">🟡 中</button>
+          <button class="filter-btn severity-btn low ${state.activeSeverity === 'low' ? 'active' : ''}" onclick="setSeverity('low')">🟢 低</button>
+          <button class="filter-btn ${state.activeSeverity === 'all' && state.activeCategory === 'all' ? '' : ''}" onclick="resetFilters()">重置</button>
+        </div>
+
+        <div class="progress-section">
+          <span class="progress-text">已审阅 ${reviewed} / ${d.suggestions.length}</span>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width:${pct}%"></div>
+          </div>
+          <span class="progress-pct">${pct}%</span>
+        </div>
+
+        <div class="suggestions-list">
+          ${filtered.length === 0 ? '<div class="no-results">没有匹配的建议</div>' :
+            filtered.map(s => {
+              const decision = state.decisions[s.id];
+              const statusClass = decision === 'accepted' ? 'accepted' : decision === 'skipped' ? 'skipped' : '';
+              return `
+              <div class="suggestion-card severity-${s.severity} ${statusClass}" id="card-${s.id}">
+                <div class="card-header">
+                  <span class="badge badge-category">${categoryEmojis[s.category] || ''} ${s.category}</span>
+                  <span class="badge badge-section">📌 ${s.section}</span>
+                  <span class="severity-dot ${s.severity}"></span>
+                  <span class="severity-text">${severityLabels[s.severity]}</span>
+                  <span class="card-id">#${s.id}</span>
+                </div>
+                <div class="card-body">
+                  <div class="diff-container">
+                    <div class="diff-box diff-original">
+                      <div class="diff-label">❌ 原文</div>
+                      <div class="diff-text">${s.original}</div>
+                    </div>
+                    <div class="diff-box diff-suggested">
+                      <div class="diff-label">✅ 建议修改为</div>
+                      <div class="diff-text">${s.suggested}</div>
+                    </div>
+                  </div>
+                  <div class="reason-text"><strong>💬 修改原因：</strong>${s.reason}</div>
+                  <div class="card-actions">
+                    ${decision ? `
+                      <span style="font-size:13px;color:var(--gray-400);margin-right:8px">${decision === 'accepted' ? '✅ 已采纳' : '⏭️ 已跳过'}</span>
+                      <button class="action-btn btn-undo" onclick="undoDecision(${s.id})">↩ 撤销</button>
+                    ` : `
+                      <button class="action-btn btn-skip" onclick="skipSuggestion(${s.id})">跳过</button>
+                      <button class="action-btn btn-accept" onclick="acceptSuggestion(${s.id})">✓ 采纳</button>
+                    `}
+                  </div>
+                </div>
+              </div>`;
+            }).join('')
+          }
+        </div>
+
+        <div class="export-section">
+          <button class="export-btn" onclick="exportAccepted()">📋 导出已采纳的修改建议</button>
+          <div class="export-hint">将生成包含所有已采纳修改建议的文本摘要</div>
+        </div>
+
+        <div class="footer">简历分析报告 · Powered by Claude</div>
+      `;
+
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function setCategory(cat) {
+      state.activeCategory = state.activeCategory === cat && cat !== 'all' ? 'all' : cat;
+      render();
+    }
+    function setSeverity(sev) {
+      state.activeSeverity = state.activeSeverity === sev ? 'all' : sev;
+      render();
+    }
+    function resetFilters() {
+      state.activeCategory = 'all';
+      state.activeSeverity = 'all';
+      render();
+    }
+    function acceptSuggestion(id) {
+      state.decisions[id] = 'accepted';
+      render();
+    }
+    function skipSuggestion(id) {
+      state.decisions[id] = 'skipped';
+      render();
+    }
+    function undoDecision(id) {
+      delete state.decisions[id];
+      render();
+    }
+    function exportAccepted() {
+      const accepted = resumeData.suggestions.filter(s => state.decisions[s.id] === 'accepted');
+      if (accepted.length === 0) {
+        alert('还没有采纳任何修改建议，请先点击"采纳"按钮选择需要的建议。');
+        return;
+      }
+      let text = `简历修改清单 - ${resumeData.fileName}\n`;
+      text += `导出时间: ${new Date().toLocaleString('zh-CN')}\n`;
+      text += `共采纳 ${accepted.length} 条修改建议\n`;
+      text += '='.repeat(50) + '\n\n';
+      accepted.forEach((s, i) => {
+        text += `【${i + 1}】[${s.category}] ${s.section}\n`;
+        text += `  原文: ${s.original}\n`;
+        text += `  改为: ${s.suggested}\n`;
+        text += `  原因: ${s.reason}\n\n`;
+      });
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `简历修改清单_${Date.now()}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
