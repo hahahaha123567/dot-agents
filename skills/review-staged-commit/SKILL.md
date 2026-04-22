@@ -20,7 +20,7 @@ description: Reviews staged and unstaged tracked git changes for obvious issues,
 - 若发现本次 diff 引入的明确缺陷或高置信阻塞风险：**不提交**，先输出审查结论与修改建议；仅凭猜测或无法定位影响范围的问题不作为阻塞项。
 - 严格遵守仓库 Git 安全协议：不改 git config；不做破坏性命令；不跳过 hooks；不 force push。
 - **正文不写来源署名**：commit message 与本轮回复只写审查结论与变更说明；不在正文里加工具/模型/编辑器名或「由 AI 生成」类措辞。若要在提交元数据中避免编辑器署名，由用户在 Cursor 等客户端里关闭「Commit with attribution」等选项，与本 skill 分工不同。
-- **小改动时避免冗余输出**：若本次仅涉及 1-2 个文件、diff 很短且未发现风险，回复应压缩为 2-4 行或 1 个短段落，只保留审查结论、核心改动、是否已提交和 commit hash；不要机械重复完整模板。
+- **小改动必须简短**：若本次仅涉及 1-2 个文件、diff 很短且未发现风险，commit message 默认只写 1 行标题，回复压缩为 1 个短段落或最多 3 行，只保留审查结论、核心改动、是否已提交和 commit hash；不要展示完整模板，不要展示完整 commit message，不要补 body。
 
 ## 工作流（必须按顺序执行）
 
@@ -108,8 +108,9 @@ git diff                    # 获取工作区差异（unstaged tracked）
    - 仅保留专有名词、类名、方法名、字段名、技术术语等英文原名（如 `accountId`、`NPE`、`accountClient`）。
 
 3. Commit message 内容要求：
-   - 标题 1 行：用中文说明"做了什么 + 为何"，避免纯 "update/fixbug"
-   - Body 2–6 行：用中文列关键点（对行为变化、兼容性、风险点、回滚点进行说明）
+   - 标题 1 行：用中文说明"做了什么"，必要时补充"为何"，避免纯 "update/fixbug"
+   - 小改动、纯文档/配置微调、单点修复：**只写标题，不写 body**
+   - 非小改动或存在需要说明的行为变化、兼容性、风险点、回滚点：才写 body，控制在 1-3 行
    - 不写长篇背景；不包含敏感信息
    - **标题与 body 为纯变更描述**：不出现工具名、模型名或暗示自动生成的装饰；与客户端是否在 commit 元数据里附加署名无关。
 
@@ -117,7 +118,8 @@ git diff                    # 获取工作区差异（unstaged tracked）
 
 1. **若存在 unstaged tracked diff**：在审查通过后，先对本次 diff 涉及且不含敏感信息的 tracked 文件执行精确的 `git add <files>`，不自动 `git add .`，避免误带入未预期改动。
 2. **若仅有 staged diff**：直接提交已暂存内容。
-3. 使用 heredoc 传递 message（保证格式稳定）：
+3. 小改动或单行 message 使用 `git commit -m "<title>"`。
+4. 只有需要 body 时，才使用 heredoc 传递 message（保证格式稳定）：
 
 ```bash
 git commit -m "$(cat <<'EOF'
@@ -128,7 +130,7 @@ EOF
 )"
 ```
 
-4. commit 完成后再 `git status` 校验结果。
+5. commit 完成后再 `git status` 校验结果。
 
 ### Step 4：异常处理
 
@@ -148,11 +150,13 @@ EOF
 
 按如下结构输出（中文即可）；**结尾不要加**来源/免责声明（正文职责同上）。
 
-若本次改动很少（例如仅 1-2 个文件、总 diff 很短、无阻塞项），可使用简化输出，不必逐项展开“主要变更点 / 风险点 / Commit message”等字段；但至少应包含：
-- 审查结论
-- 1 句核心改动说明
-- 是否已提交
-- commit hash（若已提交）
+若本次改动很少（例如仅 1-2 个文件、总 diff 很短、无阻塞项），必须使用简化输出，不逐项展开“主要变更点 / 风险点 / Commit message”等字段，不展示最终 message：
+
+```text
+Review 通过，未发现明显风险。已提交：<hash>，<一句核心改动>。
+```
+
+非小改动或需要解释风险时，才使用完整模板：
 
 - **审查源**：staged + unstaged / staged / unstaged
 - **Review 结论**：通过 / 有阻塞项
