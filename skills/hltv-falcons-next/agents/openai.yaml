@@ -1,0 +1,4 @@
+interface:
+  display_name: "HLTV Falcons Next"
+  short_description: "查询 Team Falcons 下一赛事与比赛阵容信息"
+  default_prompt: "Use $hltv-falcons-next to check Team Falcons CS2 next confirmed event and match from HLTV."
