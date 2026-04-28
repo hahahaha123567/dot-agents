@@ -2,6 +2,7 @@
 name: resume-analyzer
 description: >
   Analyze and improve resumes/CVs with brutally honest, actionable, visual feedback. Use this skill whenever the user uploads a resume (PDF or DOCX) and wants it reviewed, critiqued, improved, or optimized — whether for a specific job, ATS compatibility, or general quality. Also trigger when the user mentions "简历分析", "简历优化", "简历修改", "resume review", "CV feedback", or asks how to improve their resume. The output is an interactive HTML report that highlights every suggested change inline, showing the original text alongside the recommended revision, so the user can see exactly what to fix and how.
+user-invocable: true
 ---
 
 # Resume Analyzer Skill

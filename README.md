@@ -11,7 +11,7 @@
 | `hand-drawn-infographic` | 根据用户内容生成 16:9 手绘卡通风格信息图，提炼关键观点并用涂鸦、图标和简短文字呈现。 |
 | `hv-analysis` | 使用横纵分析法系统研究产品、公司、概念、技术或人物，纵向梳理发展历程，横向对比同类对象，最终产出 PDF 研究报告。 |
 | `jumpserver-log-debug` | 通过本机 JumpServer alias 登录目标服务器，检索服务日志、提取 `log_id`，并结合本地代码变更分析线上行为。 |
-| `netnewswire-archive` | 从 NetNewsWire starred 文章或手动 URL 抓取完整原文，识别来源和宏观标签后归档到 Obsidian。 |
+| `article-archive` | 从手动 URL 抓取完整文章，识别来源和内容标签后归档到 Obsidian。 |
 | `resume-analyzer` | 分析和优化简历/CV，读取 PDF 或 DOCX 后生成交互式 HTML 报告，逐条展示原文、建议改法和修改原因。 |
 | `review-staged-commit` | 审查 staged 与 unstaged tracked Git 变更，确认无明显风险后生成 commit message 并提交。 |
 | `weekly-report` | 结合用户口述进展和 `~/IdeaProjects/` 下 Git 提交记录，生成结构化中文程序员周报。 |

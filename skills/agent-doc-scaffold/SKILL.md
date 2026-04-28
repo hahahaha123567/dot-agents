@@ -1,6 +1,7 @@
 ---
 name: agent-doc-scaffold
 description: 为现有代码仓库或 monorepo 生成或刷新代理指令文档，包括作为唯一共享规范的根 AGENTS.md、仅引用 AGENTS.md 的精简 CLAUDE.md、放在 doc/ 下的代理文档索引，以及可选的子模块 AGENTS.md。适用于需要为项目初始化多代理协作规范、为编码代理补齐仓库级入门文档，或统一 OpenAI / Claude 兼容指令文档结构的场景。
+user-invocable: true
 ---
 
 # Agent Doc Scaffold

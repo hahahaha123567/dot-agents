@@ -1,6 +1,7 @@
 ---
 name: jumpserver-log-debug
 description: Use when Codex needs to debug a deployed service by logging into a server through the user's local JumpServer zsh alias `js`, searching service logs by the interface or handler changed in the current git diff, extracting `log_id`, fetching the complete request-processing log, and comparing the result with local code changes. Trigger when the user says code has been deployed and provides a target server hostname, log directory, request time window, interface name, or asks to check deployment logs via JumpServer.
+user-invocable: true
 ---
 
 # Jumpserver Log Debug

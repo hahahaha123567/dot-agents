@@ -1,6 +1,7 @@
 ---
 name: weekly-report
 description: 生成程序员周报，结合用户口述进展与 Git 提交记录产出结构化周报。适用于用户提到"周报""本周总结""上周总结""工作汇报""每周工作总结"等场景；默认按周一到周日计算周期，并扫描 `~/IdeaProjects/` 下相关 Git 仓库补充参考信息。
+user-invocable: true
 ---
 
 # Weekly Report

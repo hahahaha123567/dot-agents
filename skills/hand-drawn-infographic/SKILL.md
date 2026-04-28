@@ -1,6 +1,7 @@
 ---
 name: hand-drawn-infographic
 description: 根据用户提供的内容生成手绘卡通风格信息图。适用于用户提到"信息图""手绘图""cartoon infographic""doodle""涂鸦风格总结""画一张图总结"等场景；使用 nano banana pro 模式渲染，16:9 横版画布。
+user-invocable: true
 ---
 
 # Hand-Drawn Infographic
