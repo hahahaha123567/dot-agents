@@ -119,6 +119,7 @@ user-invocable: true
 - 输入：`https://weibo.com/1401527553/Qd0InF4EQ`
 - 提取末尾 ID：`Qd0InF4EQ`
 - 归档链接优先规范化为：`https://m.weibo.cn/detail/Qd0InF4EQ`
+- 如果输入是数字 `mid`，例如 `https://m.weibo.cn/detail/5216585346187714`，归档链接可以保留数字 `mid`；需要访问 `weibo.cn/comment/{短ID}` 时，先把数字 `mid` 换算为 base62 短 ID
 - 抓取时不直接用 `curl` 访问移动版网页或接口；移动版只作为本机 Chrome 打开和截图/OCR 的优先页面，因为网页元素较少、正文区域更清晰
 
 ### 微博正文与转发链抓取
@@ -132,16 +133,20 @@ user-invocable: true
 优先流程：
 1. 从 URL 末尾提取微博 ID，例如 `https://weibo.com/1401527553/PiyaLiFkN` 提取 `PiyaLiFkN`
 2. 先查询本机 NetNewsWire 缓存，避免重复走浏览器截图
-3. NetNewsWire 缓存未命中或内容不完整时，使用本机 Chrome 打开 `https://m.weibo.cn/detail/PiyaLiFkN`，优先从移动版截图/OCR 获取正文
-4. 移动版 Chrome 页面不可用、内容缺失或无法展开转发链时，再用本机 Chrome 打开桌面版原链接读取
-5. 如果 Chrome 已登录但页面无法通过命令行抓取，使用窗口截图确认可见内容
-6. 对转发微博继续点开/展开被转发微博，逐层追到最早原文，再按“原文 → 转发 1 → 转发 2 → 当前微博”整理
+3. NetNewsWire 缓存未命中或内容不完整时，优先尝试 `https://weibo.cn/comment/{短ID}` 可读页；这个页面常能直接返回正文、发布时间、作者和图片链接，页面噪声比桌面版少
+4. `weibo.cn/comment/{短ID}` 不可用、内容缺失或无法展开转发链时，再使用本机 Chrome 打开 `https://m.weibo.cn/detail/{id}`，优先从移动版截图/OCR 获取正文
+5. 移动版 Chrome 页面不可用、内容缺失或无法展开转发链时，再用本机 Chrome 打开桌面版原链接读取
+6. 如果 Chrome 已登录但页面无法通过命令行抓取，使用窗口截图确认可见内容
+7. 对转发微博继续点开/展开被转发微博，逐层追到最早原文，再按“原文 → 转发 1 → 转发 2 → 当前微博”整理
 
 微博抓取限制：
 - 不再尝试用 `curl` 直接访问 `m.weibo.cn/detail/{id}` 网页
 - 不再尝试用 `curl` 直接访问 `m.weibo.cn/statuses/show?id={id}` 接口
+- 允许用 `curl -L -x socks5://127.0.0.1:7897` 访问 `weibo.cn/comment/{短ID}` 作为缓存未命中后的可读页兜底；如果返回登录页、访客系统、评论区噪声或正文不完整，不要强行归档
 - 微博页面读取优先依赖本机 Chrome 登录态、Chrome DOM 读取、窗口截图和 OCR
 - 移动版页面仍可作为 Chrome 打开目标，优先用于截图，因为页面元素较少、OCR 更稳定
+- 批量微博归档时，不要让多个 subagent 同时抢同一个 Chrome 前台窗口；各 subagent 应优先走 NetNewsWire 和 `weibo.cn/comment/{短ID}`，只有确需 Chrome 时才使用，并在结果中说明 Chrome 是否被其他 worker 切换导致失败
+- RSSHub、公开移动端接口、未登录公开页经常返回 `Sina Visitor System`、cooldown 或 NotFound；这些只能作为失败信号，不能作为正文来源反复重试
 
 NetNewsWire 微博缓存：
 - 本机 NetNewsWire RSS 缓存固定路径：
@@ -178,6 +183,50 @@ NetNewsWire 命中后的整理要求：
 - 如果 `externalURL` 是桌面版微博链接，归档链接仍按微博规则优先规范化为 `https://m.weibo.cn/detail/{mid}`
 - `datePublished` 使用本地时区转换后作为微博发布时间；例如可用 `datetime(datePublished, 'unixepoch', 'localtime')`
 - 如果缓存只有当前层转发语，仍要继续用 Chrome 移动版页面、Chrome 桌面版页面或截图/OCR 补齐完整转发链
+
+数字 `mid` 与短 ID 换算：
+```bash
+python3 - <<'PY'
+ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def encode62(num):
+    num = int(num)
+    if num == 0:
+        return "0"
+    out = []
+    while num:
+        num, rem = divmod(num, 62)
+        out.append(ALPHABET[rem])
+    return "".join(reversed(out))
+
+def mid_to_base62(mid):
+    mid = str(mid)
+    parts = []
+    while mid:
+        chunk = mid[-7:]
+        mid = mid[:-7]
+        encoded = encode62(chunk)
+        if mid:
+            encoded = encoded.rjust(4, "0")
+        parts.append(encoded)
+    return "".join(reversed(parts))
+
+print(mid_to_base62("5216585346187714"))
+PY
+```
+
+`weibo.cn/comment/{短ID}` 可读页兜底：
+```bash
+curl -L -x socks5://127.0.0.1:7897 -s "https://weibo.cn/comment/Q6XsypXHQ" \
+  | sed -n '/<div class="c" id="M_/,/<div class="s">/p'
+```
+
+`weibo.cn/comment/{短ID}` 整理要求：
+- 只取微博本体，不要保留评论区、分页、登录提示、导航、广告或页脚
+- 提取作者、发布时间、正文、图片链接、视频/长文/网页链接说明
+- 如果正文显示“全文”或截断，继续用 Chrome 移动版或桌面版补全文
+- 如果是转发微博，`weibo.cn/comment` 只能作为当前层或可见层来源；仍需继续补齐完整转发链
+- 写入后必须用 `rg` 检查是否残留 `评论`、`转发理由` 之外的评论区内容、`登录`、`Sina Visitor System`、HTML 标签和页面导航
 
 本机 Chrome 打开命令：
 ```bash

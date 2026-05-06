@@ -1,6 +1,6 @@
 ---
 name: branch-diff-review
-description: Compare the current branch against a specified branch (e.g. origin/master) and generate a code review report tailored for QA engineers. The report highlights functional changes, risk areas, and suggested test cases. Use when the user asks to "review branch diff", "compare branches for testing", "帮我出一份给测试的 review 报告", or needs a QA-oriented change summary.
+description: 对比当前分支与指定分支（如 origin/master），生成面向 QA 测试同学的代码评审报告。报告重点说明功能变更、风险区域和建议测试用例。适用于用户要求 "review branch diff"、"compare branches for testing"、"帮我出一份给测试的 review 报告"，或需要面向测试的变更摘要的场景。
 user-invocable: true
 ---
 

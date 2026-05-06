@@ -1,6 +1,6 @@
 ---
 name: review-staged-commit
-description: Reviews staged and unstaged tracked git changes for obvious issues, then generates a commit message and commits if safe. When unstaged tracked changes are present, the skill will include them in review and, if they pass, precisely git add the involved tracked files before commit. Commit messages and replies describe the change only—no tool/AI/editor attribution in message body (editor-side options like Cursor "Commit with attribution" are separate). Use when the user asks to "review staged/unstaged code", "帮我看下改动然后顺手提交", "生成 commit message 并提交", or wants an automated review-then-commit workflow in Cursor.
+description: 审查已暂存与未暂存的 tracked git 变更，发现明显问题；若安全则生成 commit message 并提交。存在未暂存 tracked 变更时，会一并纳入审查，通过后只精确 git add 涉及文件再提交。提交信息和回复只描述变更本身，不在正文中加入工具、AI 或编辑器署名（Cursor 的 "Commit with attribution" 属于编辑器侧选项）。适用于用户要求 "review staged/unstaged code"、"帮我看下改动然后顺手提交"、"生成 commit message 并提交"，或希望在 Cursor 中自动完成 review 后提交的场景。
 user-invocable: true
 ---
 

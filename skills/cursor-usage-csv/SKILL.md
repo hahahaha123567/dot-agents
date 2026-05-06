@@ -1,6 +1,6 @@
 ---
 name: cursor-usage-csv
-description: Aggregates locally saved Cursor usage CSV by model with Chinese 万/亿 formatting and total-descending sort; default workflow scans ~/Downloads for .csv files modified within 10 minutes (newest mtime) so the user need not paste full paths. Does not fetch URLs—only local files. Use when the user exports Cursor usage to disk, mentions Downloads, or wants per-model token breakdown without typing file paths.
+description: 汇总本机保存的 Cursor 用量 CSV，按模型聚合 token，并使用中文 万/亿 格式和总量倒序展示；默认扫描 ~/Downloads 中 10 分钟内修改的 .csv 文件（取最新 mtime），用户无需粘贴完整路径。只处理本地文件，不抓取 URL。适用于用户已导出 Cursor 用量、提到 Downloads，或希望在不输入完整路径的情况下查看各模型 token 明细的场景。
 user-invocable: true
 ---
 

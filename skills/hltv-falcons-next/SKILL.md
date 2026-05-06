@@ -1,6 +1,6 @@
 ---
 name: hltv-falcons-next
-description: Query Team Falcons CS2 (HLTV team 11283) confirmed next upcoming event and next specific match, including confirmed opponent team details and five active player details. Use when the user asks about Falcons, Falcons CS2, Falcons战队, Team Falcons' next event, next match, upcoming HLTV schedule, opponent roster, or asks to use the HLTV pages /team/11283/falcons#tab-matchesBox and /team/11283/falcons#tab-eventsBox as sources.
+description: 查询 Team Falcons CS2（HLTV team 11283）已确认的下一个赛事和下一场具体比赛，包括已确认对手战队信息和 5 名现役队员信息。适用于用户询问 Falcons、Falcons CS2、Falcons 战队、Team Falcons 下一项赛事、下一场比赛、HLTV 近期赛程、对手阵容，或要求使用 HLTV 页面 /team/11283/falcons#tab-matchesBox 与 /team/11283/falcons#tab-eventsBox 作为来源的场景。
 user-invocable: true
 ---
 

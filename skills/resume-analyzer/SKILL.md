@@ -1,7 +1,7 @@
 ---
 name: resume-analyzer
 description: >
-  Analyze and improve resumes/CVs with brutally honest, actionable, visual feedback. Use this skill whenever the user uploads a resume (PDF or DOCX) and wants it reviewed, critiqued, improved, or optimized — whether for a specific job, ATS compatibility, or general quality. Also trigger when the user mentions "简历分析", "简历优化", "简历修改", "resume review", "CV feedback", or asks how to improve their resume. The output is an interactive HTML report that highlights every suggested change inline, showing the original text alongside the recommended revision, so the user can see exactly what to fix and how.
+  以直接、坦诚、可执行、可视化的方式分析并改进简历或 CV。适用于用户上传 PDF 或 DOCX 简历，并希望进行评审、批注、优化或针对特定岗位 / ATS / 整体质量改进的场景；当用户提到 "简历分析"、"简历优化"、"简历修改"、"resume review"、"CV feedback"，或询问如何改进简历时也应触发。输出为交互式 HTML 报告，会在原文旁边高亮每一处建议修改和推荐改写，让用户明确知道该改哪里、如何修改。
 user-invocable: true
 ---
 
