@@ -37,6 +37,7 @@ git log -10 --oneline       # 获取最近提交风格
 
 ```bash
 git diff                    # 获取工作区差异（unstaged tracked）
+git branch --show-current   # 获取当前分支，辅助判断上下文和提交风险
 ```
 
 **多仓库工作区处理**：若 workspace 包含多个 git 仓库，需确定目标仓库：
@@ -100,16 +101,22 @@ git diff                    # 获取工作区差异（unstaged tracked）
 
 ### Step 2：生成 commit message（遵循仓库风格）
 
+生成 commit message 时，参考 Claude Code 内置 `/commit` prompt 的原则：先基于本次将提交的 diff 理解变更目的，再结合 `git log -10 --oneline` 归纳仓库近期风格，最后只输出能准确代表本次提交的 message。不要脱离 diff 猜测背景，也不要把 review 过程、工具行为或署名写进 message 正文。
+
 1. 先判断仓库近期 commit message 是否明显采用 Conventional Commits（例如 `feat: ...`、`fix(scope): ...`）：
    - 若是：使用 Conventional Commits，类型前缀保持英文（`feat|fix|refactor|perf|docs|test|chore`），**scope 和描述部分使用中文**。
    - 若否：用仓库常见风格（从 `git log -10 --oneline` 归纳），保持简洁。
 
 2. **语言规则**：
-   - **普通动词和业务逻辑描述一律使用中文**，不要用英文动词开头（如 guard / skip / add / update / remove），改用对应中文（如 增加 / 跳过 / 新增 / 更新 / 移除）。
+   - **普通动词和业务逻辑描述一律使用中文**，不要用英文动词开头（如 guard / skip / remove），改用对应中文（如 增加 / 跳过 / 移除）。
+   - 表示变更性质的词可以直接使用英文，尤其是 `add`、`update`、`fix`、`refactor`、`test`、`docs`、`chore`、`perf`；若仓库近期风格偏英文，可优先沿用。
    - 仅保留专有名词、类名、方法名、字段名、技术术语等英文原名（如 `accountId`、`NPE`、`accountClient`）。
 
 3. Commit message 内容要求：
-   - 标题 1 行：用中文说明"做了什么"，必要时补充"为何"，避免纯 "update/fixbug"
+   - 标题 1 行：用中文说明"做了什么"，必要时补充"为何"，避免纯 "update/fixbug"。
+   - 优先表达变更目的和影响，能说明 "why" 时不要只罗列 "what"。
+   - 准确区分变更性质：`add/feat` 表示全新能力，`update` 表示既有能力增强，`fix` 表示缺陷修复，`refactor` 表示不改变行为的结构调整，`test` 与 `docs` 只用于对应类型。
+   - 默认保持简洁：通常 1 行标题即可；需要说明行为变化、兼容性、风险或回滚点时，message 总体控制在 1-2 个短句或标题加 1-3 行 body。
    - 小改动、纯文档/配置微调、单点修复：**只写标题，不写 body**
    - 非小改动或存在需要说明的行为变化、兼容性、风险点、回滚点：才写 body，控制在 1-3 行
    - 不写长篇背景；不包含敏感信息
@@ -119,8 +126,9 @@ git diff                    # 获取工作区差异（unstaged tracked）
 
 1. **若存在 unstaged tracked diff**：在审查通过后，先对本次 diff 涉及且不含敏感信息的 tracked 文件执行精确的 `git add <files>`，不自动 `git add .`，避免误带入未预期改动。
 2. **若仅有 staged diff**：直接提交已暂存内容。
-3. 小改动或单行 message 使用 `git commit -m "<title>"`。
-4. 只有需要 body 时，才使用 heredoc 传递 message（保证格式稳定）：
+3. 创建 commit 前确认没有敏感文件、未确认的 untracked 文件或与本次无关的变更被纳入。
+4. 小改动或单行 message 可使用 `git commit -m "<title>"`。
+5. 多行 message、包含 body、或 message 中可能出现引号/特殊字符时，必须使用 heredoc 传递 message（保证格式稳定）：
 
 ```bash
 git commit -m "$(cat <<'EOF'
@@ -131,7 +139,7 @@ EOF
 )"
 ```
 
-5. commit 完成后再 `git status` 校验结果。
+6. commit 完成后再 `git status --short` 校验结果，并记录 commit hash。
 
 ### Step 4：异常处理
 
