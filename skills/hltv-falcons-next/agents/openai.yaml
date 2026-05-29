@@ -1,4 +1,4 @@
 interface:
   display_name: "HLTV Falcons Next"
-  short_description: "查询 Team Falcons 下一赛事与比赛阵容信息"
-  default_prompt: "Use $hltv-falcons-next to check Team Falcons CS2 next confirmed event and match from HLTV."
+  short_description: "查询 Team Falcons 下一赛事、阵容，并用 subagent 并行查询 10 名选手近 3 个月 Rating"
+  default_prompt: "Use $hltv-falcons-next to check Team Falcons CS2 next confirmed event, match, lineups, and 3-month HLTV stats Rating from HLTV. Delegate the ten player Rating lookups to subagents and merge their structured results."

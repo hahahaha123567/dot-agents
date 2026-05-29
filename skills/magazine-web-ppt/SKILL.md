@@ -88,7 +88,7 @@ user-invocable: true
 
 ```bash
 mkdir -p "项目/XXX/ppt/images"
-cp "<SKILL_ROOT>/assets/template.html" "项目/XXX/ppt/index.html"
+cp "/Users/zhangyaoxin/.agents/skills/magazine-web-ppt/assets/template.html" "项目/XXX/ppt/index.html"
 ```
 
 `template.html` 是一个**完整可运行**的文件——CSS、WebGL shader、翻页 JS、字体/图标 CDN 全已预设好，只有 `<main id="deck">` 里面是 3 个示例 slide（封面、章节幕封、空白填充页）。
