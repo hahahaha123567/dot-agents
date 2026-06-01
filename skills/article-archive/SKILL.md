@@ -115,6 +115,54 @@ user-invocable: true
 
 ## 特殊 URL 处理
 
+### Reddit 文章抓取
+
+处理目标：
+- Reddit 归档只抓取主贴标题、正文、作者和发布时间；默认不归档评论区
+- 顶部主链接保留 Reddit 原始帖子 URL，来源标签使用 `#Reddit`
+- 文件日期优先使用帖子发布时间按本机时区转换后的 `YYYY-MM-DD`
+
+优先流程：
+1. 先尝试 `curl -L -x socks5://127.0.0.1:7897` 抓取原始 URL、`old.reddit.com`、`sh.reddit.com` 或 `.json` 接口
+2. 如果返回 `Blocked`、`whoa there, pardner!`、`You've been blocked by network security`、空正文，或 `.json` 不是 JSON，不要反复重试公开接口
+3. 使用本机 Chrome 打开 Reddit 原始 URL，依赖已登录浏览器环境和页面 DOM 读取主贴
+4. 从 `shreddit-post` 提取 `post-title`、`author`、`faceplate-timeago[ts]` 和 `[slot="text-body"]`
+5. 将 `ts` 转换成本机时区日期；例如 `2025-11-22T19:48:28.717Z` 在 Asia/Shanghai 为 `2025-11-23 03:48`
+6. 写入后用 `rg` 检查是否残留 HTML、登录页、Blocked 文案、评论区控件或 Reddit UI 文案
+
+本机 Chrome 打开 Reddit：
+```bash
+osascript <<'APPLESCRIPT'
+tell application "Google Chrome"
+  if (count of windows) = 0 then make new window
+  set bounds of front window to {80, 80, 1500, 1050}
+  set URL of active tab of front window to "https://www.reddit.com/r/LiberalGooseGroup/comments/1p42ea0/"
+  delay 8
+  return {URL of active tab of front window, title of active tab of front window, bounds of front window}
+end tell
+APPLESCRIPT
+```
+
+Reddit 主贴 DOM 读取：
+```bash
+osascript <<'APPLESCRIPT'
+tell application "Google Chrome"
+  set js to "(() => { const post = document.querySelector('shreddit-post'); const body = post?.querySelector('[slot=\"text-body\"]') || post; const time = post?.querySelector('faceplate-timeago')?.getAttribute('ts') || post?.querySelector('time')?.getAttribute('datetime') || ''; const author = post?.getAttribute('author') || ''; const title = post?.getAttribute('post-title') || document.title.replace(/ : r\\/.*$/, ''); const text = body ? body.innerText : ''; return JSON.stringify({url: location.href, title, author, time, text}); })()"
+  return execute active tab of front window javascript js
+end tell
+APPLESCRIPT
+```
+
+Reddit 整理要求：
+- 正文从主贴 `text` 第一段开始，不添加作者、抓取时间、摘要或 AI 说明
+- 如果 DOM 读取结果里 `text` 为空，先确认页面是否登录、是否需要展开正文、是否被 NSFW/年龄提示遮挡；必要时通过页面点击后再次读取
+- 如果帖子正文里保留了 Markdown 加粗、列表或链接，归档时尽量保留
+- 不输出或归档 cookie、token、账号信息、浏览器扩展信息
+- 写入后检查：
+  ```bash
+  rg -n '<[^>]+>|登录|Blocked|whoa there|Add a comment|Sort by|Award|Share|Vote' "归档文件.md"
+  ```
+
 ### 微博 URL 转换
 - 输入：`https://weibo.com/1401527553/Qd0InF4EQ`
 - 提取末尾 ID：`Qd0InF4EQ`
