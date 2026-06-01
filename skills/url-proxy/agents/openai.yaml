@@ -1,0 +1,4 @@
+interface:
+  display_name: "URL Proxy"
+  short_description: "生成 Jina Reader 网页代理地址"
+  default_prompt: "Use $url-proxy to convert an inaccessible webpage URL into a Jina Reader proxy URL."

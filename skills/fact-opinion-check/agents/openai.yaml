@@ -1,0 +1,4 @@
+interface:
+  display_name: "事实观点核查"
+  short_description: "区分文本中的事实与观点并核查证据"
+  default_prompt: "Use $fact-opinion-check to analyze this text and separate factual claims from opinions with evidence labels."
