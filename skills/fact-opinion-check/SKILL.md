@@ -1,6 +1,6 @@
 ---
 name: fact-opinion-check
-description: 分析一段文本，区分作者声称的事实与表达的观点，并通过权威新闻报道核查事实和观点的证据支撑情况。Use when the user asks to separate facts and opinions, identify factual claims versus opinions, 核查文本事实, 标注有证据/无证据, or apply the prompt "提取其中的事实和观点" to pasted text.
+description: 分析文本，区分事实与观点，通过权威新闻核查证据支撑情况。适用于事实观点分离、核查文本、标注有证据/无证据等场景。
 ---
 
 # Fact Opinion Check
