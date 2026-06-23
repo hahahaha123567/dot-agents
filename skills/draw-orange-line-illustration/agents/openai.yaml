@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draw Orange Line Illustration"
+  short_description: "生成纽约客风格黑线白底、橙色点缀的克制概念插画配图"
+  default_prompt: "Use $draw-orange-line-illustration to create a restrained orange-accent editorial concept illustration for this idea."

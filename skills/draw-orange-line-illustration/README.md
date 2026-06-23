@@ -153,10 +153,10 @@
 
 ```bash
 # Cola
-~/.cola/skills/orange-line-illustration/
+~/.cola/skills/draw-orange-line-illustration/
 
 # Claude Code
-~/.claude/skills/orange-line-illustration/
+~/.claude/skills/draw-orange-line-illustration/
 ```
 
 然后直接对你的 agent 说——"给这篇文章配三张橙线风格插图"或"把这篇文章做成橙线 PPT"——它就会照着规范来。

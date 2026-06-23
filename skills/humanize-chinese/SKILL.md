@@ -1,6 +1,7 @@
 ---
 name: humanize-chinese
-description: 检测并润色AI生成中文文本。20+检测规则，场景感知融合，8种风格转换，支持检测/改写/降重/对比。纯Python离线运行，含同义词词林。适用于AI文本检测、风格转换、学术降重等场景。
+description: |
+  检测并润色AI生成中文文本。20+检测规则，场景感知融合，8种风格转换，支持检测/改写/降重/对比。纯Python离线运行，含同义词词林。适用于AI文本检测、风格转换、学术降重等场景。
   Use when user says: "去AI味", "降AIGC", "人性化文本", "humanize chinese", "AI检测", "AIGC降重",
   "去除AI痕迹", "文本改写", "论文降重", "知网检测", "维普检测", "AI写作检测", "让文字更自然",
   "detect AI text", "humanize text", "reduce AIGC score", "make text human-like",

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draw Hand-Drawn Infographic"
+  short_description: "把文章、观点或会议内容总结成 16:9 手绘卡通信息图"
+  default_prompt: "Use $draw-hand-drawn-infographic to summarize this content as a 16:9 hand-drawn cartoon infographic."

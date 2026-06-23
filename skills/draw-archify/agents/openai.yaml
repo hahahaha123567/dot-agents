@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draw Archify"
+  short_description: "生成可导出的工程架构图、流程图、时序图、数据流图和生命周期图"
+  default_prompt: "Use $draw-archify to turn this system or process description into a polished exportable technical diagram."

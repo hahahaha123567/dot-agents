@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draw Folk Doodle Image"
+  short_description: "童趣民间涂鸦风格的图片生成、图片编辑或整体风格转换"
+  default_prompt: "Use $draw-folk-doodle-image to turn this image or scene into a whimsical folk doodle illustration."

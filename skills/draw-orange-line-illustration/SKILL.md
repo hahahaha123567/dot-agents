@@ -1,5 +1,5 @@
 ---
-name: orange-line-illustration
+name: draw-orange-line-illustration
 description: 生成纽约客风格极简插画：黑线白底、大面积留白、橙色点缀。适用于文章配图、封面图、公众号插图、概念插画、PPT配图等场景。触发词：橙线风格、纽约客风格插图、线条插画PPT等。
 metadata:
   category: creative

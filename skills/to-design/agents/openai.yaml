@@ -1,0 +1,4 @@
+interface:
+  display_name: "To Design"
+  short_description: "Generate Go-style engineering design docs"
+  default_prompt: "Use $to-design to turn this PRD or feature request into a clear engineering design document."

@@ -1,5 +1,5 @@
 ---
-name: archify
+name: draw-archify
 description: 生成专业架构图、流程图、时序图、数据流图及生命周期图，输出独立HTML文件，内置明暗主题切换，一键导出PNG/JPEG/WebP/SVG。接受自然语言或Mermaid代码输入。
 license: MIT
 metadata:

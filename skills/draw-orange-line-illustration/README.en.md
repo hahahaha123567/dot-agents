@@ -153,10 +153,10 @@ Works with any AI agent that supports the SKILL.md convention (Cola, Claude Code
 
 ```bash
 # Cola
-~/.cola/skills/orange-line-illustration/
+~/.cola/skills/draw-orange-line-illustration/
 
 # Claude Code
-~/.claude/skills/orange-line-illustration/
+~/.claude/skills/draw-orange-line-illustration/
 ```
 
 Then tell your agent — "generate three orange-line illustrations for this article" or "turn this article into an orange-line PPT" — and it follows the spec.

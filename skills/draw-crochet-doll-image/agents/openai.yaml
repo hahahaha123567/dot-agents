@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draw Crochet Doll Image"
+  short_description: "把指定图片转换成温馨钩针玩偶、毛线质感和怀旧毛公仔风格"
+  default_prompt: "Use $draw-crochet-doll-image to transform this image into a warm handcrafted crochet doll character."
